@@ -7,6 +7,8 @@ using namespace std;
 ifstream f("dive-log.csv");
 
 /**
+ * @brief 
+ * 
  * @struct DiveLog
  * @brief A structure to store information about a dive.
  * 
@@ -29,14 +31,17 @@ struct DiveLog {
     int duration;
 };
 
+const int MAX_DIVES = 100; // Maximum number of dives
+
 void citire() {
-    vector<DiveLog> diveLogs;
+    DiveLog diveLogs[MAX_DIVES];
+    int count = 0;
     string line;
     
     // Skip the header line
     getline(f, line);
     
-    while (getline(f, line)) {
+    while (getline(f, line) && count < MAX_DIVES) {
         stringstream ss(line);
         DiveLog log;
         string depth, duration;
@@ -49,13 +54,13 @@ void citire() {
         log.depth = stoi(depth);
         log.duration = stoi(duration);
         
-        diveLogs.push_back(log);
+        diveLogs[count++] = log;
     }
     
     // Print the dive logs to verify
-    for (const auto& log : diveLogs) {
-        cout << "Date: " << log.date << ", Location: " << log.location
-             << ", Depth: " << log.depth << "m, Duration: " << log.duration << "min" << endl;
+    for (int i = 0; i < count; ++i) {
+        cout << "Date: " << diveLogs[i].date << ", Location: " << diveLogs[i].location
+             << ", Depth: " << diveLogs[i].depth << "m, Duration: " << diveLogs[i].duration << "min" << endl;
     }
 }
 
