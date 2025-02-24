@@ -1,15 +1,12 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
-#include <vector>
+#include <cstring>
 using namespace std;
 
 ifstream f("dive-log.csv");
 
 /**
- * @brief 
- * 
- * @struct DiveLog
+  @struct DiveLog
  * @brief A structure to store information about a dive.
  * 
  * @var DiveLog::date
@@ -25,36 +22,44 @@ ifstream f("dive-log.csv");
  * The duration of the dive in minutes.
  */
 struct DiveLog {
-    string date;
-    string location;
+    char date[20];
+    char location[50];
     int depth;
     int duration;
 };
 
 const int MAX_DIVES = 100; // Maximum number of dives
+const int MAX_LINE = 1000; // Maximum number of characters in a line
+
+void parseLine(const char* line, DiveLog& log) {
+    char* cstr = new char[strlen(line) + 1];
+    strcpy(cstr, line);
+    
+    char* token = strtok(cstr, ",");
+    strcpy(log.date, token);
+    
+    token = strtok(NULL, ",");
+    strcpy(log.location, token);
+    
+    token = strtok(NULL, ",");
+    log.depth = atoi(token);
+    
+    token = strtok(NULL, ",");
+    log.duration = atoi(token);
+    
+    delete[] cstr;
+}
 
 void citire() {
     DiveLog diveLogs[MAX_DIVES];
     int count = 0;
-    string line;
+    char line[MAX_LINE];
     
     // Skip the header line
-    getline(f, line);
+    f.getline(line, MAX_LINE);
     
-    while (getline(f, line) && count < MAX_DIVES) {
-        stringstream ss(line);
-        DiveLog log;
-        string depth, duration;
-        
-        getline(ss, log.date, ',');
-        getline(ss, log.location, ',');
-        getline(ss, depth, ',');
-        getline(ss, duration, ',');
-        
-        log.depth = stoi(depth);
-        log.duration = stoi(duration);
-        
-        diveLogs[count++] = log;
+    while (f.getline(line, MAX_LINE) && count < MAX_DIVES) {
+        parseLine(line, diveLogs[count++]);
     }
     
     // Print the dive logs to verify
