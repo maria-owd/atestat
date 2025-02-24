@@ -31,6 +31,9 @@ struct DiveLog {
 const int MAX_DIVES = 100; // Maximum number of dives
 const int MAX_LINE = 1000; // Maximum number of characters in a line
 
+DiveLog diveLogs[MAX_DIVES];
+int numDives = 0;
+
 void parseLine(const char* line, DiveLog& log) {
     char* cstr = new char[strlen(line) + 1];
     strcpy(cstr, line);
@@ -51,19 +54,18 @@ void parseLine(const char* line, DiveLog& log) {
 }
 
 void citire() {
-    DiveLog diveLogs[MAX_DIVES];
-    int count = 0;
     char line[MAX_LINE];
     
     // Skip the header line
     f.getline(line, MAX_LINE);
     
-    while (f.getline(line, MAX_LINE) && count < MAX_DIVES) {
-        parseLine(line, diveLogs[count++]);
+    while (f.getline(line, MAX_LINE) && numDives < MAX_DIVES) {
+        parseLine(line, diveLogs[numDives++]);
     }
-    
-    // Print the dive logs to verify
-    for (int i = 0; i < count; ++i) {
+}
+
+void afisare() {        
+    for (int i = 0; i < numDives; ++i) {
         cout << "Date: " << diveLogs[i].date << ", Location: " << diveLogs[i].location
              << ", Depth: " << diveLogs[i].depth << "m, Duration: " << diveLogs[i].duration << "min" << endl;
     }
@@ -71,5 +73,6 @@ void citire() {
 
 int main() {
     citire();
+    afisare();
     return 0;
 }
