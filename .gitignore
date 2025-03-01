@@ -43,10 +43,11 @@ Thumbs.db
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
-Makefile
+# Makefile
 
 # Other
 *.swp
 *.swo
 
 dive-log.csv
+dive-log
