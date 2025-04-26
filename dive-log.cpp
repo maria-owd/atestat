@@ -278,7 +278,7 @@ void citire() {
 /**
  * Afisare linie orizontala, folosind caracter special ASCII
  * 
- * @param nr: lungimea liniei, in caractere 
+ * @param nr: lungimea liniei, in caractere 0
  */
 void linie(int nr) {
     for (int i = 0; i < nr; i++) {
@@ -960,6 +960,7 @@ void meniuPrincipal() {
       case 7:
         statisticiScufundari();
         break;
+        
       case 8:
         salvareJurnal();
         break;
