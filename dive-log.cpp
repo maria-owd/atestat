@@ -250,16 +250,16 @@ void citire() {
 }
 
 void afisareCapTabel() {
-  cout << "+------+---------------------+---------+----------+-------------------------------+" << endl;
-  cout << "| Nr.  | Data si ora         | Durata  | Adancime | Locul scufundarii             |" << endl;
-  cout << "+------+---------------------+---------+----------+-------------------------------+" << endl;
+  cout << "+------+---------------------+--------+----------+--------------------------------+" << endl;
+  cout << "| Nr.  | Data si ora         | Durata | Adancime | Locul scufundarii              |" << endl;
+  cout << "+------+---------------------+--------+----------+--------------------------------+" << endl;
 }
 
 void afisareLinie(const Dive& dive) {
   cout << "| " << setw(4) << left << dive.diveNumber << " | "
        << setw(10) << left << dive.date << " " << setw(8) << dive.time << " | "
-       << setw(7) << right << dive.duration << " min | "
-       << setw(8) << dive.maxDepth << " m | "
+       << setw(2) << right << dive.duration << " min | "
+       << setw(6) << dive.maxDepth << " m | "
        << setw(30) << left << dive.location << " |" << endl;
 }
 
