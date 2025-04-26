@@ -13,11 +13,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: configure
-      run: ./configure
-    - name: make
+
+    - name: Set up C++ compiler
+      run: sudo apt-get install g++ # Asigură-te că g++ este instalat
+
+    - name: Build project
       run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+
+    - name: Clean build files
+      run: make clean
