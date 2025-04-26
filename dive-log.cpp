@@ -75,6 +75,16 @@ char* urmatorulSeparator(char*& token) {
   return start;
 }
 
+void stergeGhilimele(char* str) {
+  int len = strlen(str);
+  if (len > 1 && str[0] == QUOTE && str[len - 1] == QUOTE) {
+    for (int i = 1; i < len - 1; ++i) {
+      str[i - 1] = str[i];
+    }
+    str[len - 2] = '\0';  // Null-terminate the string
+  }
+}
+
 /**
  * Citeste o linie din fisierul CSV si o parseaza in structura Dive
  */
@@ -83,14 +93,16 @@ void parseLine(char* line, Dive& log) {
 
   if (sep) log.diveNumber = atoi(urmatorulSeparator(sep));
 
-  if (sep)
+  if (sep) {
     strcpy(log.date, urmatorulSeparator(sep));
-  else
+    stergeGhilimele(log.date);
+  } else
     strcpy(log.date, "N/A");
 
-  if (sep)
+  if (sep) {
     strcpy(log.time, urmatorulSeparator(sep));
-  else
+    stergeGhilimele(log.time);
+  } else
     strcpy(log.time, "N/A");
 
   if (sep)
@@ -113,9 +125,10 @@ void parseLine(char* line, Dive& log) {
   else
     log.avgDepth = 0;
 
-  if (sep)
+  if (sep) {
     strcpy(log.mode, urmatorulSeparator(sep));
-  else
+    stergeGhilimele(log.mode);
+  } else
     strcpy(log.mode, "N/A");
 
   if (sep)
@@ -153,29 +166,34 @@ void parseLine(char* line, Dive& log) {
   else
     log.he = 0;
 
-  if (sep)
+  if (sep) {
     strcpy(log.location, urmatorulSeparator(sep));
-  else
+    stergeGhilimele(log.location);
+  } else
     strcpy(log.location, "N/A");
 
-  if (sep)
+  if (sep) {
     strcpy(log.gps, urmatorulSeparator(sep));
-  else
+    stergeGhilimele(log.gps);
+  } else
     strcpy(log.gps, "N/A");
 
-  if (sep)
+  if (sep) {
     strcpy(log.diveMaster, urmatorulSeparator(sep));
-  else
+    stergeGhilimele(log.diveMaster);
+  } else
     strcpy(log.diveMaster, "N/A");
 
-  if (sep)
+  if (sep) {
     strcpy(log.buddy, urmatorulSeparator(sep));
-  else
+    stergeGhilimele(log.buddy);
+  } else
     strcpy(log.buddy, "N/A");
 
-  if (sep)
+  if (sep) {
     strcpy(log.suit, urmatorulSeparator(sep));
-  else
+    stergeGhilimele(log.suit);
+  } else
     strcpy(log.suit, "N/A");
 
   if (sep)
@@ -183,14 +201,16 @@ void parseLine(char* line, Dive& log) {
   else
     log.rating = 0;
 
-  if (sep)
+  if (sep) {
     strcpy(log.visibility, urmatorulSeparator(sep));
-  else
+    stergeGhilimele(log.visibility);
+  } else
     strcpy(log.visibility, "N/A");
 
-  if (sep)
+  if (sep) {
     strcpy(log.notes, urmatorulSeparator(sep));
-  else
+    stergeGhilimele(log.notes);
+  } else
     strcpy(log.notes, "N/A");
 
   if (sep)
@@ -198,9 +218,10 @@ void parseLine(char* line, Dive& log) {
   else
     log.weight = 0.0f;
 
-  if (sep)
+  if (sep) {
     strcpy(log.tags, urmatorulSeparator(sep));
-  else
+    stergeGhilimele(log.tags);
+  } else
     strcpy(log.tags, "N/A");
 }
 
@@ -261,26 +282,211 @@ void afisareDetaliata() {
   }
 }
 
-
 void afisare() {
-    // Header
-    cout << "+------+---------------------+---------+----------+--------------------------------+" << endl;
-    cout << "| Nr.  | Data si ora         | Durata  | Adancime | Locul scufundarii              |" << endl;
-    cout << "+------+---------------------+---------+----------+--------------------------------+" << endl;
+  // Header
+  cout << "+------+---------------------+---------+----------+-----------------"
+          "---------------+"
+       << endl;
+  cout << "| Nr.  | Data si ora         | Durata  | Adancime | Locul "
+          "scufundarii              |"
+       << endl;
+  cout << "+------+---------------------+---------+----------+-----------------"
+          "---------------+"
+       << endl;
 
-    // Rows
-    for (int i = 0; i < numDives; ++i) {
-        Dive dive = diveLogs[i];
-        cout << "| " << setw(4) << left << dive.diveNumber << " | "
-             << setw(10) << left << dive.date << " " << setw(8) << dive.time << " | "
-             << setw(3)  << right << dive.duration << " min | "
-             << setw(6) << dive.maxDepth << " m | "
-             << setw(30) << left << dive.location << " |" << endl;
-    }
+  // Rows
+  for (int i = 0; i < numDives; ++i) {
+    Dive dive = diveLogs[i];
+    cout << "| " << setw(4) << left << dive.diveNumber << " | " << setw(10)
+         << left << dive.date << " " << setw(8) << dive.time << " | " << setw(3)
+         << right << dive.duration << " min | " << setw(6) << dive.maxDepth
+         << " m | " << setw(30) << left << dive.location << " |" << endl;
+  }
 
-    cout << "+------+---------------------+---------+----------+--------------------------------+" << endl;
+  cout << "+------+---------------------+---------+----------+-----------------"
+          "---------------+"
+       << endl;
 }
-  
+
+void adaugareScufundare() {
+  if (numDives >= MAX_DIVES) {
+    cout << "Nu mai este loc pentru scufundari!" << endl;
+    return;
+  }
+
+  Dive newDive = {};
+  newDive.diveNumber = numDives + 1;
+
+  cout << "Introduceti detaliile scufundarii #" << newDive.diveNumber << endl;
+
+  cout << "Data (format: YYYY-MM-DD): ";
+  cin.getline(newDive.date, sizeof(newDive.date));
+
+  cout << "Ora (format: HH:MM): ";
+  cin.getline(newDive.time, sizeof(newDive.time));
+
+  cout << "Durata (minute): ";
+  cin >> newDive.duration;
+
+  cout << "Adancime maxima (metri): ";
+  cin >> newDive.maxDepth;
+
+  cin.ignore();  // sterge newline-ul ramas in buffer
+
+  cout << "Locul scufundarii: ";
+  cin.getline(newDive.location, sizeof(newDive.location));
+
+  // Adaugati aici restul campurilor dorite
+
+  diveLogs[numDives++] = newDive;
+
+  cout << "Scufundarea a fost adaugata cu succes!" << endl;
+}
+
+/**
+ * Editare scufundare
+ */
+void editareScufundare() {
+  if (numDives == 0) {
+    cout << "Nu exista scufundari in jurnal pentru a fi editate!" << endl;
+    return;
+  }
+
+  afisare();  // Afișează jurnalul pentru a permite utilizatorului să aleagă o
+              // scufundare
+  int diveNumber;
+  cout << "Introduceti numarul scufundarii pe care doriti sa o editati: ";
+  cin >> diveNumber;
+
+  // Găsește scufundarea după număr
+  int index = -1;
+  for (int i = 0; i < numDives; ++i) {
+    if (diveLogs[i].diveNumber == diveNumber) {
+      index = i;
+      break;
+    }
+  }
+
+  if (index == -1) {
+    cout << "Scufundarea cu numarul #" << diveNumber << " nu a fost gasita!"
+         << endl;
+    return;
+  }
+
+  Dive& dive = diveLogs[index];
+  cout << "Editati detaliile pentru scufundarea #" << dive.diveNumber << ":"
+       << endl;
+
+  cin.ignore();  // Curăță buffer-ul înainte de a citi șiruri de caractere
+
+  cout << "Data curenta (" << dive.date << "): ";
+  cin.getline(dive.date, sizeof(dive.date));
+
+  cout << "Ora curenta (" << dive.time << "): ";
+  cin.getline(dive.time, sizeof(dive.time));
+
+  cout << "Durata curenta (" << dive.duration << " minute): ";
+  cin >> dive.duration;
+
+  cout << "Adancime maxima curenta (" << dive.maxDepth << " metri): ";
+  cin >> dive.maxDepth;
+
+  cin.ignore();  // Curăță buffer-ul
+
+  cout << "Locul curent al scufundarii (" << dive.location << "): ";
+  cin.getline(dive.location, sizeof(dive.location));
+
+  // Adaugă alte câmpuri dacă este necesar
+  cout << "Editarea scufundarii #" << dive.diveNumber << " a fost finalizata!"
+       << endl;
+}
+
+/**
+ * Stergere scufundare
+ */
+void stergereScufundare() {
+  if (numDives == 0) {
+    cout << "Nu exista scufundari in jurnal pentru a fi sterse!" << endl;
+    return;
+  }
+
+  afisare();  // Afișează jurnalul pentru a permite utilizatorului să aleagă o
+              // scufundare
+  int diveNumber;
+  cout << "Introduceti numarul scufundarii pe care doriti sa o stergeti: ";
+  cin >> diveNumber;
+
+  // Găsește scufundarea după număr
+  int index = -1;
+  for (int i = 0; i < numDives; ++i) {
+    if (diveLogs[i].diveNumber == diveNumber) {
+      index = i;
+      break;
+    }
+  }
+
+  if (index == -1) {
+    cout << "Scufundarea cu numarul #" << diveNumber << " nu a fost gasita!"
+         << endl;
+    return;
+  }
+
+  // Șterge scufundarea prin mutarea tuturor elementelor următoare cu o poziție
+  // înapoi
+  for (int i = index; i < numDives - 1; ++i) {
+    diveLogs[i] = diveLogs[i + 1];
+    diveLogs[i].diveNumber = i + 1;  // Reindexează numerele scufundărilor
+  }
+
+  numDives--;  // Reduce numărul total de scufundări
+  cout << "Scufundarea #" << diveNumber << " a fost stearsa cu succes!" << endl;
+}
+
+/**
+ * Salvează jurnalul de scufundări în fișierul CSV original
+ */
+void salvareJurnal() {
+  ofstream outFile("dive-log.csv");
+
+  if (!outFile.is_open()) {
+    cerr << "Error: Nu s-a putut deschide fișierul 'dive-log.csv' pentru "
+            "scriere."
+         << endl;
+    return;
+  }
+
+  // Scrie antetul fișierului CSV
+  outFile
+      << "dive number,date,time,duration [min],sac [l/min],maxdepth "
+         "[m],avgdepth [m],mode,airtemp [C],watertemp [C],cylinder size "
+         "[l],startpressure [bar],endpressure [bar],o2 [%],he "
+         "[%],location,gps,divemaster,buddy,suit,rating,visibility,notes,"
+         "weight [kg],tags\n";
+
+  // Scrie fiecare scufundare în fișier
+  for (int i = 0; i < numDives; ++i) {
+    Dive dive = diveLogs[i];
+    outFile << dive.diveNumber << ","
+            << "\"" << dive.date << "\","
+            << "\"" << dive.time << "\"," << dive.duration << "," << dive.sac
+            << "," << dive.maxDepth << "," << dive.avgDepth << ","
+            << "\"" << dive.mode << "\"," << dive.airTemp << ","
+            << dive.waterTemp << "," << dive.cylinderSize << ","
+            << dive.startPressure << "," << dive.endPressure << "," << dive.o2
+            << "," << dive.he << ","
+            << "\"" << dive.location << "\","
+            << "\"" << dive.gps << "\","
+            << "\"" << dive.diveMaster << "\","
+            << "\"" << dive.buddy << "\","
+            << "\"" << dive.suit << "\"," << dive.rating << ","
+            << "\"" << dive.visibility << "\","
+            << "\"" << dive.notes << "\"," << dive.weight << ","
+            << "\"" << dive.tags << "\"\n";
+  }
+
+  outFile.close();
+  cout << "Jurnalul a fost salvat cu succes în 'dive-log.csv'!" << endl;
+}
 
 /**
  * Afisare logo cofetarie
@@ -304,6 +510,12 @@ int afisareMeniu() {
   cout << endl << "*** Alegeti optiunea dorita ***" << endl << endl;
   cout << "1. Jurnalul de scufundari" << endl;
   cout << "2. Jurnalul de scufundari detaliat" << endl;
+  cout << "3. Adaugare scufundare" << endl;
+  cout << "4. Editare scufundare" << endl;
+  cout << "5. Stergere scufundare" << endl;
+  cout << "6. Cautare scufundare" << endl;
+  cout << "7. Statistici scufundari" << endl;
+  cout << "8. Salvare jurnal" << endl;
   cout << "9. Despre program" << endl;
   cout << "0. Iesire din program" << endl;
 
@@ -340,13 +552,33 @@ void meniuPrincipal() {
     opt = afisareMeniu();
     cout << endl << endl;
     switch (opt) {
-        case 1:
-            afisare();
-            break;
-    
-        case 2:
-            afisareDetaliata();
-            break;
+      case 1:
+        afisare();
+        break;
+
+      case 2:
+        afisareDetaliata();
+        break;
+
+      case 3:
+        adaugareScufundare();
+        break;
+
+      case 4:
+        editareScufundare();
+        break;
+
+      case 5:
+        stergereScufundare();
+        break;
+
+      case 6:
+      case 7:
+        cout << "Optiunea nu este implementata inca!" << endl;
+        break;
+      case 8:
+        salvareJurnal();
+        break;
 
       case 9:
         despreProgram();
