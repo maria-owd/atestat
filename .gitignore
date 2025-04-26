@@ -2,9 +2,6 @@
 *.o
 *.obj
 
-# doc
-.pptx
-
 # Compiled static libraries
 *.lib
 *.a
