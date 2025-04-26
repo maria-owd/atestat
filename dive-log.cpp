@@ -19,7 +19,9 @@
 #include <iostream>
 using namespace std;
 
-ifstream f("dive-log.csv");
+const char* FILE_NAME = "dive-log.csv";
+
+ifstream f(FILE_NAME);
 
 /**
   Structura pentru a stoca informatiile despre fiecare scufundare
@@ -247,16 +249,18 @@ void citesteLinie(char* line, Dive& log) {
  * Functia citeste fisierul CSV si il parseaza in structura Dive
  */
 void citire() {
+  ifstream f(FILE_NAME);
+
   if (!f.is_open()) {
-    cerr << "Error: Could not open file 'dive-log.csv'." << endl;
+    cerr << "Eroare: Nu s-a putut deschide fișierul '" << FILE_NAME << "'." << endl;
     exit(1);
   }
 
   char line[MAX_LINE];
 
-  // Skip the header line
+  // Sar antetul fișierului
   if (!f.getline(line, MAX_LINE)) {
-    cerr << "Error: File 'dive-log.csv' is empty or malformed." << endl;
+    cerr << "Eroare: Fișierul '" << FILE_NAME << "' este gol sau are un format incorect." << endl;
     exit(1);
   }
 
@@ -265,7 +269,7 @@ void citire() {
   }
 
   if (numDives == 0) {
-    cerr << "Error: No valid dive logs found in 'dive-log.csv'." << endl;
+    cerr << "Eroare: Nu s-au găsit scufundări valide în fișierul '" << FILE_NAME << "'." << endl;
     exit(1);
   }
 }
@@ -508,12 +512,10 @@ void stergereScufundare() {
  * Salvează jurnalul de scufundări în fișierul CSV original
  */
 void salvareJurnal() {
-  ofstream outFile("dive-log.csv");
+  ofstream outFile(FILE_NAME);
 
   if (!outFile.is_open()) {
-    cerr << "Error: Nu s-a putut deschide fișierul 'dive-log.csv' pentru "
-            "scriere."
-         << endl;
+    cerr << "Eroare: Nu s-a putut deschide fișierul '" << FILE_NAME << "' pentru scriere." << endl;
     return;
   }
 
@@ -546,7 +548,7 @@ void salvareJurnal() {
   }
 
   outFile.close();
-  cout << "Jurnalul a fost salvat cu succes în 'dive-log.csv'!" << endl;
+  cout << "Jurnalul a fost salvat cu succes în '" << FILE_NAME << "'!" << endl;
 }
 
 /**
