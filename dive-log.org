@@ -1,2 +1,0 @@
-dive number,date,time,duration [min],sac [l/min],maxdepth [m],avgdepth [m],mode,airtemp [C],watertemp [C],cylinder size (1) [l],startpressure (1) [bar],endpressure (1) [bar],o2 (1) [%],he (1) [%],location,gps,divemaster,buddy,suit,rating,visibility,notes,weight [kg],tags,
-1,2018-08-08,20:54:16,45:33,15.273,15,13.79,,,,10.0,230.0,50.0,,,Potos,40.594904 24.603776,Denise Guresoaia,Iulian,5mm,,,Prima scufundare,6,
