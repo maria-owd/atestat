@@ -249,6 +249,20 @@ void citire() {
   }
 }
 
+void afisareCapTabel() {
+  cout << "+------+---------------------+---------+----------+-------------------------------+" << endl;
+  cout << "| Nr.  | Data si ora         | Durata  | Adancime | Locul scufundarii             |" << endl;
+  cout << "+------+---------------------+---------+----------+-------------------------------+" << endl;
+}
+
+void afisareLinie(const Dive& dive) {
+  cout << "| " << setw(4) << left << dive.diveNumber << " | "
+       << setw(10) << left << dive.date << " " << setw(8) << dive.time << " | "
+       << setw(7) << right << dive.duration << " min | "
+       << setw(8) << dive.maxDepth << " m | "
+       << setw(30) << left << dive.location << " |" << endl;
+}
+
 void afisareDetaliata() {
   for (int i = 0; i < numDives; ++i) {
     Dive dive = diveLogs[i];
@@ -283,29 +297,15 @@ void afisareDetaliata() {
 }
 
 void afisare() {
-  // Header
-  cout << "+------+---------------------+---------+----------+-----------------"
-          "---------------+"
-       << endl;
-  cout << "| Nr.  | Data si ora         | Durata  | Adancime | Locul "
-          "scufundarii              |"
-       << endl;
-  cout << "+------+---------------------+---------+----------+-----------------"
-          "---------------+"
-       << endl;
+  afisareCapTabel(); 
 
-  // Rows
+  // Afișează fiecare scufundare
   for (int i = 0; i < numDives; ++i) {
-    Dive dive = diveLogs[i];
-    cout << "| " << setw(4) << left << dive.diveNumber << " | " << setw(10)
-         << left << dive.date << " " << setw(8) << dive.time << " | " << setw(3)
-         << right << dive.duration << " min | " << setw(6) << dive.maxDepth
-         << " m | " << setw(30) << left << dive.location << " |" << endl;
+    afisareLinie(diveLogs[i]);
   }
 
-  cout << "+------+---------------------+---------+----------+-----------------"
-          "---------------+"
-       << endl;
+  // Linie de încheiere
+  cout << "+------+---------------------+---------+----------+-------------------------------+" << endl;
 }
 
 void adaugareScufundare() {
@@ -489,6 +489,40 @@ void salvareJurnal() {
 }
 
 /**
+ * Cautare scufundare dupa locatie
+ */
+void cautareScufundare() {
+  if (numDives == 0) {
+    cout << "Nu exista scufundari in jurnal pentru a fi cautate!" << endl;
+    return;
+  }
+
+  char searchTerm[50];
+  cout << "Introduceti un sir de caractere pentru cautare in locatie: ";
+ // cin.ignore(); // Curăță buffer-ul
+  cin.getline(searchTerm, sizeof(searchTerm));
+
+  bool found = false;
+
+  afisareCapTabel(); // Afișează capul de tabel
+
+  // Caută și afișează scufundările care conțin șirul de caractere
+  for (int i = 0; i < numDives; ++i) {
+    if (strstr(diveLogs[i].location, searchTerm) != NULL) { // Verifică dacă locația conține șirul
+      found = true;
+      afisareLinie(diveLogs[i]);
+    }
+  }
+
+  // Linie de încheiere
+  cout << "+------+---------------------+---------+----------+-------------------------------+" << endl;
+
+  if (!found) {
+    cout << "Nu s-au gasit scufundari care sa contina '" << searchTerm << "' in locatie." << endl;
+  }
+}
+
+/**
  * Afisare logo cofetarie
  */
 void logo() {
@@ -573,6 +607,9 @@ void meniuPrincipal() {
         break;
 
       case 6:
+        cautareScufundare();
+        break;
+
       case 7:
         cout << "Optiunea nu este implementata inca!" << endl;
         break;
