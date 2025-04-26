@@ -17,6 +17,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 using namespace std;
 
 const char* FILE_NAME = "dive-log.csv";
