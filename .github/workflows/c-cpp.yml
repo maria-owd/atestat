@@ -14,9 +14,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up C++ compiler
-      run: sudo apt-get install g++ # Asigură-te că g++ este instalat
-
+    - name: configure
+      run: ./configure
+      
     - name: Build project
       run: make
 
