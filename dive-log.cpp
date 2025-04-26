@@ -14,7 +14,7 @@ struct Dive {
   char date[20];
   char time[10];
   int duration;
-  float sac;
+  float sac;  // consumul de aer in litri pe minut (surface-air consumption)
   int maxDepth;
   int avgDepth;
   char mode[20];
@@ -88,7 +88,7 @@ void stergeGhilimele(char* str) {
 /**
  * Citeste o linie din fisierul CSV si o parseaza in structura Dive
  */
-void parseLine(char* line, Dive& log) {
+void citesteLinie(char* line, Dive& log) {
   char* sep = line;  // separatorul incepe cu inceputul liniei
 
   if (sep) log.diveNumber = atoi(urmatorulSeparator(sep));
@@ -240,7 +240,7 @@ void citire() {
   }
 
   while (f.getline(line, MAX_LINE) && numDives < MAX_DIVES) {
-    parseLine(line, diveLogs[numDives++]);
+    citesteLinie(line, diveLogs[numDives++]);
   }
 
   if (numDives == 0) {
@@ -250,54 +250,71 @@ void citire() {
 }
 
 void afisareCapTabel() {
-  cout << "+------+---------------------+--------+----------+--------------------------------+" << endl;
-  cout << "| Nr.  | Data si ora         | Durata | Adancime | Locul scufundarii              |" << endl;
-  cout << "+------+---------------------+--------+----------+--------------------------------+" << endl;
+  cout << "+------+---------------------+--------+----------+--------------+---"
+          "-----------------------------+"
+       << endl;
+  cout << "| Nr.  | Data si ora         | Durata | Adancime |  Consum aer  | "
+          "Locul scufundarii              |"
+       << endl;
+  cout << "+------+---------------------+--------+----------+--------------+---"
+          "-----------------------------+"
+       << endl;
 }
 
 void afisareLinie(const Dive& dive) {
-  cout << "| " << setw(4) << left << dive.diveNumber << " | "
-       << setw(10) << left << dive.date << " " << setw(8) << dive.time << " | "
-       << setw(2) << right << dive.duration << " min | "
-       << setw(6) << dive.maxDepth << " m | "
-       << setw(30) << left << dive.location << " |" << endl;
+  cout << "| " << setw(4) << left << dive.diveNumber << " | " << setw(10)
+       << left << dive.date << " " << setw(8) << dive.time << " | " << setw(2)
+       << right << dive.duration << " min | " << setw(6) << dive.maxDepth
+       << " m | ";
+  if (dive.sac != 0) {
+    cout << setw(6) << fixed << setprecision(2) << dive.sac << " l/min | ";
+  } else {
+    cout << setw(6) << "             | ";
+  }
+  cout << setw(30) << left << dive.location << " |" << endl;
+}
+
+void afisareLinieIncheiere() {
+  cout << "+------+---------------------+--------+----------+--------------+---"
+          "-----------------------------+"
+       << endl;
 }
 
 void afisareDetaliata() {
   for (int i = 0; i < numDives; ++i) {
     Dive dive = diveLogs[i];
 
-    cout << "Dive #" << dive.diveNumber << ":" << endl;
-    cout << "  Date: " << dive.date << endl;
-    cout << "  Time: " << dive.time << endl;
-    cout << "  Duration: " << dive.duration << " minutes" << endl;
-    cout << "  SAC: " << dive.sac << endl;
-    cout << "  Max Depth: " << dive.maxDepth << " meters" << endl;
-    cout << "  Avg Depth: " << dive.avgDepth << " meters" << endl;
-    cout << "  Mode: " << dive.mode << endl;
-    cout << "  Air Temp: " << dive.airTemp << " °C" << endl;
-    cout << "  Water Temp: " << dive.waterTemp << " °C" << endl;
-    cout << "  Cylinder Size: " << dive.cylinderSize << " liters" << endl;
-    cout << "  Start Pressure: " << dive.startPressure << " bar" << endl;
-    cout << "  End Pressure: " << dive.endPressure << " bar" << endl;
+    cout << "Scufundare #" << dive.diveNumber << ":" << endl;
+    cout << "  Data: " << dive.date << endl;
+    cout << "  Ora: " << dive.time << endl;
+    cout << "  Durata: " << dive.duration << " minute" << endl;
+    cout << "  Consum aer (SAC): " << dive.sac << endl;
+    cout << "  Adâncime maximă: " << dive.maxDepth << " metri" << endl;
+    cout << "  Adâncime medie: " << dive.avgDepth << " metri" << endl;
+    cout << "  Mod: " << dive.mode << endl;
+    cout << "  Temperatura aerului: " << dive.airTemp << " °C" << endl;
+    cout << "  Temperatura apei: " << dive.waterTemp << " °C" << endl;
+    cout << "  Volum cilindru: " << dive.cylinderSize << " litri" << endl;
+    cout << "  Presiune inițială: " << dive.startPressure << " bar" << endl;
+    cout << "  Presiune finală: " << dive.endPressure << " bar" << endl;
     cout << "  O2: " << dive.o2 << "%" << endl;
     cout << "  He: " << dive.he << "%" << endl;
-    cout << "  Location: " << dive.location << endl;
+    cout << "  Locație: " << dive.location << endl;
     cout << "  GPS: " << dive.gps << endl;
-    cout << "  Dive Master: " << dive.diveMaster << endl;
-    cout << "  Buddy: " << dive.buddy << endl;
-    cout << "  Suit: " << dive.suit << endl;
-    cout << "  Rating: " << dive.rating << "/5" << endl;
-    cout << "  Visibility: " << dive.visibility << endl;
-    cout << "  Notes: " << dive.notes << endl;
-    cout << "  Weight: " << dive.weight << " kg" << endl;
-    cout << "  Tags: " << dive.tags << endl;
+    cout << "  Ghid scufundare: " << dive.diveMaster << endl;
+    cout << "  Buddy (partener): " << dive.buddy << endl;
+    cout << "  Costum: " << dive.suit << endl;
+    cout << "  Evaluare: " << dive.rating << "/5" << endl;
+    cout << "  Vizibilitate: " << dive.visibility << endl;
+    cout << "  Note: " << dive.notes << endl;
+    cout << "  Greutate: " << dive.weight << " kg" << endl;
+    cout << "  Etichete: " << dive.tags << endl;
     cout << "----------------------------------------" << endl;
   }
 }
 
 void afisare() {
-  afisareCapTabel(); 
+  afisareCapTabel();
 
   // Afișează fiecare scufundare
   for (int i = 0; i < numDives; ++i) {
@@ -305,7 +322,7 @@ void afisare() {
   }
 
   // Linie de încheiere
-  cout << "+------+---------------------+---------+----------+-------------------------------+" << endl;
+  afisareLinieIncheiere();
 }
 
 void adaugareScufundare() {
@@ -456,12 +473,11 @@ void salvareJurnal() {
   }
 
   // Scrie antetul fișierului CSV
-  outFile
-      << "dive number,date,time,duration [min],sac [l/min],maxdepth "
-         "[m],avgdepth [m],mode,airtemp [C],watertemp [C],cylinder size "
-         "[l],startpressure [bar],endpressure [bar],o2 [%],he "
-         "[%],location,gps,divemaster,buddy,suit,rating,visibility,notes,"
-         "weight [kg],tags\n";
+  outFile << "dive number,date,time,duration [min],sac [l/min],maxdepth "
+             "[m],avgdepth [m],mode,airtemp [C],watertemp [C],cylinder size "
+             "[l],startpressure [bar],endpressure [bar],o2 [%],he "
+             "[%],location,gps,divemaster,buddy,suit,rating,visibility,notes,"
+             "weight [kg],tags\n";
 
   // Scrie fiecare scufundare în fișier
   for (int i = 0; i < numDives; ++i) {
@@ -499,31 +515,33 @@ void cautareScufundare() {
 
   char searchTerm[50];
   cout << "Introduceti un sir de caractere pentru cautare in locatie: ";
- // cin.ignore(); // Curăță buffer-ul
+  // cin.ignore(); // Curăță buffer-ul
   cin.getline(searchTerm, sizeof(searchTerm));
 
   bool found = false;
 
-  afisareCapTabel(); // Afișează capul de tabel
+  afisareCapTabel();  // Afișează capul de tabel
 
   // Caută și afișează scufundările care conțin șirul de caractere
   for (int i = 0; i < numDives; ++i) {
-    if (strstr(diveLogs[i].location, searchTerm) != NULL) { // Verifică dacă locația conține șirul
+    if (strstr(diveLogs[i].location, searchTerm) !=
+        NULL) {  // Verifică dacă locația conține șirul
       found = true;
       afisareLinie(diveLogs[i]);
     }
   }
 
   // Linie de încheiere
-  cout << "+------+---------------------+---------+----------+-------------------------------+" << endl;
+  afisareLinieIncheiere();
 
   if (!found) {
-    cout << "Nu s-au gasit scufundari care sa contina '" << searchTerm << "' in locatie." << endl;
+    cout << "Nu s-au gasit scufundari care sa contina '" << searchTerm
+         << "' in locatie." << endl;
   }
 }
 
 /**
- * Afisare logo cofetarie
+ * Afisare logo
  */
 void logo() {
   cout << endl;
@@ -576,6 +594,211 @@ void despreProgram() {
 }
 
 /**
+ * Top 3 cele mai lungi scufundari
+ */
+void top3Lungi() {
+  if (numDives < 1) {
+    cout << "Nu exista scufundari pentru a calcula statistici!" << endl;
+    return;
+  }
+
+  // Copiază scufundările într-un array temporar
+  Dive sorted[MAX_DIVES];
+  memcpy(sorted, diveLogs, sizeof(diveLogs));
+
+  // Sortare clasică (Bubble Sort) după durata descrescător
+  for (int i = 0; i < numDives - 1; ++i) {
+    for (int j = 0; j < numDives - i - 1; ++j) {
+      if (sorted[j].duration < sorted[j + 1].duration) {
+        Dive temp = sorted[j];
+        sorted[j] = sorted[j + 1];
+        sorted[j + 1] = temp;
+      }
+    }
+  }
+
+  cout << "Top 3 cele mai lungi scufundari:" << endl;
+  afisareCapTabel();  // Afișează capul de tabel
+  for (int i = 0; i < min(3, numDives); ++i) {
+    afisareLinie(sorted[i]);  // Afișează fiecare scufundare
+  }
+  afisareLinieIncheiere();
+}
+
+/**
+ * Top 3 cele mai adanci scufundari
+ */
+void top3Adanci() {
+  if (numDives < 1) {
+    cout << "Nu exista scufundari pentru a calcula statistici!" << endl;
+    return;
+  }
+
+  // Copiază scufundările într-un array temporar
+  Dive sorted[MAX_DIVES];
+  memcpy(sorted, diveLogs, sizeof(diveLogs));
+
+  // Sortare clasică (Bubble Sort) după adâncime descrescător
+  for (int i = 0; i < numDives - 1; ++i) {
+    for (int j = 0; j < numDives - i - 1; ++j) {
+      if (sorted[j].maxDepth < sorted[j + 1].maxDepth) {
+        Dive temp = sorted[j];
+        sorted[j] = sorted[j + 1];
+        sorted[j + 1] = temp;
+      }
+    }
+  }
+
+  cout << "Top 3 cele mai adanci scufundari:" << endl;
+  afisareCapTabel();  // Afișează capul de tabel
+  for (int i = 0; i < min(3, numDives); ++i) {
+    afisareLinie(sorted[i]);  // Afișează fiecare scufundare
+  }
+  afisareLinieIncheiere();
+}
+
+/**
+ * Top 3 cele mai eficiente scufundari
+ */
+void top3Eficiente() {
+  if (numDives < 1) {
+    cout << "Nu exista scufundari pentru a calcula statistici!" << endl;
+    return;
+  }
+
+  // Copiază scufundările într-un array temporar
+  Dive sorted[MAX_DIVES];
+  int validDives = 0;
+
+  // Filtrează scufundările cu SAC > 0
+  for (int i = 0; i < numDives; ++i) {
+    if (diveLogs[i].sac > 0) {
+      sorted[validDives++] = diveLogs[i];
+    }
+  }
+
+  if (validDives == 0) {
+    cout << "Nu exista scufundari cu SAC valid pentru a calcula statistici!"
+         << endl;
+    return;
+  }
+
+  // Sortare clasică (Bubble Sort) după SAC crescător
+  for (int i = 0; i < validDives - 1; ++i) {
+    for (int j = 0; j < validDives - i - 1; ++j) {
+      if (sorted[j].sac > sorted[j + 1].sac) {
+        Dive temp = sorted[j];
+        sorted[j] = sorted[j + 1];
+        sorted[j + 1] = temp;
+      }
+    }
+  }
+
+  cout << "Top 3 scufundari eficiente (SAC mic):" << endl;
+  afisareCapTabel();  // Afișează capul de tabel
+  for (int i = 0; i < min(3, validDives); ++i) {
+    afisareLinie(sorted[i]);  // Afișează fiecare scufundare
+  }
+  afisareLinieIncheiere();
+}
+
+/**
+ * Top 3 cele mai ineficiente scufundari
+ */
+void top3Ineficiente() {
+  if (numDives < 1) {
+    cout << "Nu exista scufundari pentru a calcula statistici!" << endl;
+    return;
+  }
+
+  // Copiază scufundările într-un array temporar
+  Dive sorted[MAX_DIVES];
+  memcpy(sorted, diveLogs, sizeof(diveLogs));
+
+  // Sortare clasică (Bubble Sort) după SAC descrescător
+  for (int i = 0; i < numDives - 1; ++i) {
+    for (int j = 0; j < numDives - i - 1; ++j) {
+      if (sorted[j].sac < sorted[j + 1].sac) {
+        Dive temp = sorted[j];
+        sorted[j] = sorted[j + 1];
+        sorted[j + 1] = temp;
+      }
+    }
+  }
+
+  cout << "Top 3 scufundari ineficiente (SAC mare):" << endl;
+  afisareCapTabel();  // Afișează capul de tabel
+  for (int i = 0; i < min(3, numDives); ++i) {
+    afisareLinie(sorted[i]);  // Afișează fiecare scufundare
+  }
+  afisareLinieIncheiere();
+}
+
+/**
+ * Durata medie a scufundarilor
+ */
+void durataMedie() {
+  if (numDives < 1) {
+    cout << "Nu exista scufundari pentru a calcula statistici!" << endl;
+    return;
+  }
+
+  int totalDurata = 0;
+  for (int i = 0; i < numDives; ++i) {
+    totalDurata += diveLogs[i].duration;
+  }
+
+  double medie = static_cast<double>(totalDurata) / numDives;
+  cout << "Durata medie a scufundarilor: " << fixed << setprecision(2) << medie
+       << " minute" << endl;
+}
+
+/**
+ * Adancimea medie a scufundarilor
+ */
+void adancimeMedie() {
+  if (numDives < 1) {
+    cout << "Nu exista scufundari pentru a calcula statistici!" << endl;
+    return;
+  }
+
+  int totalAdancime = 0;
+  for (int i = 0; i < numDives; ++i) {
+    totalAdancime += diveLogs[i].maxDepth;
+  }
+
+  double medie = static_cast<double>(totalAdancime) / numDives;
+  cout << "Adancimea medie a scufundarilor: " << fixed << setprecision(2)
+       << medie << " metri" << endl;
+}
+
+/**
+ * Statistici scufundari
+ */
+void statisticiScufundari() {
+  cout << "Statistici scufundari:" << endl;
+  cout << "----------------------" << endl;
+
+  top3Lungi();
+  cout << endl;
+
+  top3Adanci();
+  cout << endl;
+
+  top3Eficiente();
+  cout << endl;
+
+  top3Ineficiente();
+  cout << endl;
+
+  durataMedie();
+  cout << endl;
+
+  adancimeMedie();
+  cout << endl;
+}
+
+/**
  * Procesare comenzi de la utilizator
  * Iesirea din program se face cu optiunea 0
  */
@@ -611,7 +834,7 @@ void meniuPrincipal() {
         break;
 
       case 7:
-        cout << "Optiunea nu este implementata inca!" << endl;
+        statisticiScufundari();
         break;
       case 8:
         salvareJurnal();
