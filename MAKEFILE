@@ -1,3 +1,10 @@
+# Makefile pentru proiectul "dive-log"
+# Acest Makefile este utilizat pentru a compila și gestiona proiectul C++.
+
+# Comenzi disponibile:
+# 1. `make`         - Compilează proiectul și generează executabilul `dive-log`.
+# 2. `make clean`   - Șterge fișierele generate (executabilul și fișierele obiect `.o`).
+
 # Compiler
 CXX = g++
 
@@ -18,15 +25,15 @@ all: $(TARGET)
 
 # Link the target executable
 $(TARGET): $(OBJS)
-    $(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
 
 # Compile source files into object files
 %.o: %.cpp
-    $(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Clean up build files
 clean:
-    rm -f $(TARGET) $(OBJS)
+	rm -f $(TARGET) $(OBJS)
 
 # Phony targets
 .PHONY: all clean
