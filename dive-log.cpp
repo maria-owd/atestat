@@ -41,9 +41,7 @@ const int MAX_DIVES = 100;  // Numarul maxim de scufundari
 const int MAX_LINE = 1000;  // Numarul maxim de caractere intr-o linie
 
 const char SEP = ',';  // Separatorul din fisierul CSV
-const char QUOTE =
-    '"';  // Ghilimelele pentru a evita separarea in interiorul acestora
-const char NEWLINE = '\n';  // Separatorul de linie
+const char QUOTE = '"';  // Ghilimelele pentru a evita separarea in interiorul acestora
 
 Dive diveLogs[MAX_DIVES];
 int numDives = 0;
