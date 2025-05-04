@@ -49,7 +49,7 @@ cmake_install.cmake
 *.swp
 *.swo
 
-dive-log.csv
+#dive-log.csv
 dive-log
 dive-log.org
 doc/~$Proiect-DiveLog-Maria-M.pptx
